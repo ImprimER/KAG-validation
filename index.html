@@ -1,89 +1,122 @@
-
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>KAG Validation</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>KAG Tracker v0.7 - Validation des Animaux</title>
   <style>
-    body { font-family: sans-serif; margin: 2em; background: #f9f9f9; }
-    h1 { font-size: 1.5em; }
-    .animal { padding: 1em; border-bottom: 1px solid #ccc; }
-    button { padding: 0.5em 1em; margin-top: 0.5em; }
+    body {
+      font-family: sans-serif;
+      margin: 0;
+      padding: 1rem;
+      background: #f9f9f9;
+      color: #333;
+    }
+    header {
+      background: #333;
+      color: white;
+      padding: 1em;
+      text-align: center;
+    }
+    main {
+      padding: 1em;
+    }
+    .animal {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: white;
+      margin-bottom: 0.5em;
+      padding: 1em;
+      border-radius: 10px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    button {
+      padding: 0.4em 1em;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .valid { background: #4caf50; color: white; }
+    .refus { background: #f44336; color: white; }
+    .export {
+      display: block;
+      margin: 1em auto;
+      padding: 0.6em 1.2em;
+      font-size: 1em;
+      background: #007bff;
+      color: white;
+      border-radius: 8px;
+      border: none;
+    }
   </style>
 </head>
 <body>
-  <h1>KAG Validation (démo)</h1>
-  <div class="animal">
-    <strong>Animal :</strong> Chien<br>
-    <button onclick="alert('Validé')">Valider</button>
-    <button onclick="alert('À refaire')">À refaire</button>
-  </div>
-  <div class="animal">
-    <strong>Animal :</strong> Chat<br>
-    <button onclick="alert('Validé')">Valider</button>
-    <button onclick="alert('À refaire')">À refaire</button>
-  </div>
+  <header>
+    <h1>KAG Tracker – Validation v0.7</h1>
+  </header>
+  <main id="tracker"></main>
+  <button class="export" onclick="exportValidation()">Exporter les validations</button>
+
+  <script>
+    // Liste des animaux à valider
+    const animals = ["Chien", "Chat", "Aigle", "Tigre", "Panda", "Lion", "Ours", "Loup", "Renard", "Chauve-souris"];
+    // Objet pour stocker les validations
+    let validationData = {};
+
+    // Affichage des animaux et leurs options de validation
+    function renderAnimals() {
+      const tracker = document.getElementById("tracker");
+      tracker.innerHTML = ""; // Réinitialiser le contenu
+
+      animals.forEach(animal => {
+        const div = document.createElement("div");
+        div.className = "animal";
+        div.innerHTML = `
+          <span>${animal}</span>
+          <div>
+            <button class="valid" onclick="validate('${animal}')">Valider</button>
+            <button class="refus" onclick="reject('${animal}')">Refuser</button>
+          </div>
+        `;
+        tracker.appendChild(div);
+      });
+    }
+
+    // Fonction de validation
+    function validate(animal) {
+      validationData[animal] = "validé";
+      updateUI(animal);
+    }
+
+    // Fonction de rejet
+    function reject(animal) {
+      validationData[animal] = "refusé";
+      updateUI(animal);
+    }
+
+    // Mettre à jour l'interface après une validation ou un rejet
+    function updateUI(animal) {
+      const divs = [...document.querySelectorAll(".animal")];
+      divs.forEach(div => {
+        if (div.textContent.includes(animal)) {
+          div.style.opacity = "0.6";
+          div.style.borderLeft = validationData[animal] === "validé" ? "6px solid green" : "6px solid red";
+        }
+      });
+    }
+
+    // Fonction pour exporter les validations en JSON
+    function exportValidation() {
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(validationData, null, 2));
+      const dlAnchor = document.createElement("a");
+      dlAnchor.setAttribute("href", dataStr);
+      dlAnchor.setAttribute("download", "kag_validations.json");
+      dlAnchor.click();
+    }
+
+    // Initialisation
+    renderAnimals();
+  </script>
 </body>
 </html>
-<script>
-  // Liste des animaux à valider
-  const animals = ["Chien", "Chat", "Aigle", "Tigre", "Panda"];
-
-  // Objet pour stocker les validations
-  let validationData = {};
-
-  // Affichage des animaux et leurs options de validation
-  function renderAnimals() {
-    const tracker = document.getElementById("tracker");
-    tracker.innerHTML = ""; // Réinitialiser le contenu
-
-    animals.forEach(animal => {
-      const div = document.createElement("div");
-      div.className = "animal";
-      div.innerHTML = `
-        <span>${animal}</span>
-        <div>
-          <button class="valid" onclick="validate('${animal}')">Valider</button>
-          <button class="refus" onclick="reject('${animal}')">Refuser</button>
-        </div>
-      `;
-      tracker.appendChild(div);
-    });
-  }
-
-  // Fonction de validation
-  function validate(animal) {
-    validationData[animal] = "validé";
-    updateUI(animal);
-  }
-
-  // Fonction de rejet
-  function reject(animal) {
-    validationData[animal] = "refusé";
-    updateUI(animal);
-  }
-
-  // Mettre à jour l'interface après une validation ou un rejet
-  function updateUI(animal) {
-    const divs = [...document.querySelectorAll(".animal")];
-    divs.forEach(div => {
-      if (div.textContent.includes(animal)) {
-        div.style.opacity = "0.6";
-        div.style.borderLeft = validationData[animal] === "validé" ? "6px solid green" : "6px solid red";
-      }
-    });
-  }
-
-  // Fonction pour exporter les validations en JSON
-  function exportValidation() {
-    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(validationData, null, 2));
-    const dlAnchor = document.createElement("a");
-    dlAnchor.setAttribute("href", dataStr);
-    dlAnchor.setAttribute("download", "kag_validations.json");
-    dlAnchor.click();
-  }
-
-  // Initialisation
-  renderAnimals();
-</script>
