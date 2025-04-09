@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -31,6 +32,13 @@
       border-radius: 10px;
       box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
+    .animal img {
+      width: 50px;
+      height: 50px;
+      object-fit: cover;
+      border-radius: 8px;
+      margin-right: 1rem;
+    }
     button {
       padding: 0.4em 1em;
       border: none;
@@ -59,8 +67,20 @@
   <button class="export" onclick="exportValidation()">Exporter les validations</button>
 
   <script>
-    // Liste des animaux à valider
-    const animals = ["Chien", "Chat", "Aigle", "Tigre", "Panda", "Lion", "Ours", "Loup", "Renard", "Chauve-souris"];
+    // Liste des animaux et leurs images
+    const animals = [
+      { name: "Chien", image: "https://placeimg.com/50/50/animals" },
+      { name: "Chat", image: "https://placeimg.com/50/50/animals" },
+      { name: "Aigle", image: "https://placeimg.com/50/50/animals" },
+      { name: "Tigre", image: "https://placeimg.com/50/50/animals" },
+      { name: "Panda", image: "https://placeimg.com/50/50/animals" },
+      { name: "Lion", image: "https://placeimg.com/50/50/animals" },
+      { name: "Ours", image: "https://placeimg.com/50/50/animals" },
+      { name: "Loup", image: "https://placeimg.com/50/50/animals" },
+      { name: "Renard", image: "https://placeimg.com/50/50/animals" },
+      { name: "Chauve-souris", image: "https://placeimg.com/50/50/animals" }
+    ];
+
     // Objet pour stocker les validations
     let validationData = {};
 
@@ -73,10 +93,11 @@
         const div = document.createElement("div");
         div.className = "animal";
         div.innerHTML = `
-          <span>${animal}</span>
+          <img src="${animal.image}" alt="${animal.name}">
+          <span>${animal.name}</span>
           <div>
-            <button class="valid" onclick="validate('${animal}')">Valider</button>
-            <button class="refus" onclick="reject('${animal}')">Refuser</button>
+            <button class="valid" onclick="validate('${animal.name}')">Valider</button>
+            <button class="refus" onclick="reject('${animal.name}')">Refuser</button>
           </div>
         `;
         tracker.appendChild(div);
